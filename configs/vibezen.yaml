@@ -1,0 +1,89 @@
+# VIBEZEN Default Configuration
+# Copy this file and customize for your needs
+
+vibezen:
+  # AI Provider Settings
+  providers:
+    default: "openai"  # Default provider to use
+    models:
+      openai: "gpt-4"
+      # anthropic: "claude-3-sonnet"  # Disabled - VIBEZEN doesn't use Anthropic
+      google: "gemini-pro"
+    
+  # Thinking Configuration
+  thinking:
+    min_steps:
+      spec_understanding: 5      # Minimum thinking steps for understanding
+      implementation_choice: 4   # Minimum steps for approach selection
+      implementation: 3          # Minimum steps during implementation
+      test_design: 3            # Minimum steps for test design
+    confidence_threshold: 0.7    # Required confidence before proceeding
+    max_revisions: 3            # Maximum thinking revisions allowed
+    
+  # Prompt Templates
+  templates:
+    thinking_style: "sequential"  # or "freeform", "structured"
+    include_examples: true       # Include examples in prompts
+    custom_templates_path: null  # Path to custom templates
+    
+  # Quality Checks
+  quality:
+    pre_checks:
+      enabled: true
+      require_understanding: true
+      min_requirements: 3
+    
+    post_checks:
+      enabled: true
+      detect_hardcoding: true
+      check_error_handling: true
+      validate_tests: true
+    
+  # Violation Detection
+  violations:
+    hardcode_patterns:
+      - 'password\s*=\s*["\''][^"\'']*["\'']'
+      - 'api_key\s*=\s*["\''][^"\'']*["\'']'
+      - 'port\s*=\s*\d+'
+      - 'localhost|127\.0\.0\.1'
+      - 'admin|root|test.*@.*\.com'
+      - 'bearer\s+[A-Za-z0-9\-\._~\+\/]+=*'
+    
+    complexity_threshold: 10
+    max_file_length: 500
+    
+  # Checkpoint Configuration
+  checkpoints:
+    implementation:
+      after_core_logic: true
+      before_error_handling: true
+      after_each_feature: true
+    
+  # Integration Settings
+  integrations:
+    one_stop_workflow:
+      enabled: true
+      intercept_phases: ["all"]  # or specific phases
+      
+    mis:
+      enabled: false
+      knowledge_graph: true
+      
+    logging:
+      level: "INFO"
+      format: "json"
+      file: "vibezen.log"
+      
+# Provider-specific overrides (optional)
+provider_overrides:
+  openai:
+    temperature: 0.7
+    max_tokens: 4000
+    
+  # anthropic:  # Disabled - VIBEZEN doesn't use Anthropic
+  #   temperature: 0.5
+  #   max_tokens: 8000
+    
+  google:
+    temperature: 0.6
+    max_output_tokens: 2048

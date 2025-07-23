@@ -1,0 +1,28 @@
+# Core dependencies
+pydantic>=2.5.0
+httpx>=0.26.0
+jinja2>=3.1.0
+pyyaml>=6.0
+rich>=13.7.0
+asyncio
+typing-extensions>=4.0.0
+python-dotenv>=1.0.0
+
+# AI Provider SDKs (optional - install as needed)
+# Uncomment the providers you want to use:
+# openai>=1.0.0
+# anthropic>=0.8.0
+# google-generativeai>=0.3.0
+
+# Development dependencies
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-mock>=3.12.0
+pytest-cov>=4.1.0
+black>=24.0.0
+ruff>=0.1.0
+mypy>=1.8.0
+
+# Logging and monitoring
+python-json-logger>=2.0.0
+structlog>=23.0.0

@@ -1,0 +1,63 @@
+vibezen:
+  # Sequential Thinking設定
+  thinking:
+    min_steps:
+      spec_understanding: 5
+      implementation_choice: 4
+      test_design: 3
+      quality_review: 2
+      optimization: 2
+    confidence_threshold: 0.7
+    max_steps: 10
+    allow_revision: true
+    force_branches: false
+    
+  # 防御レベル設定
+  defense:
+    pre_validation:
+      enabled: true
+      use_o3_search: true
+      cache_results: true
+      cache_ttl: 3600
+    runtime_monitoring:
+      enabled: true
+      real_time: true
+      buffer_size: 100
+      check_interval: 0.5
+    post_validation:
+      enabled: true
+      strict_mode: false
+      generate_report: true
+      
+  # トリガー設定
+  triggers:
+    hardcode_detection:
+      enabled: true
+      patterns:
+        - 'port\s*=\s*\d+'
+        - 'password\s*=\s*["\']'
+        - '(localhost|127\.0\.0\.1)'
+        - 'timeout\s*=\s*\d+'
+        - 'api_key\s*=\s*["\']'
+      custom_patterns: []
+    complexity_threshold: 10
+    spec_violation_detection: true
+    over_implementation_detection: true
+    
+  # 外部連携
+  integrations:
+    mis:
+      enabled: true
+      event_types: 
+        - 'code_generated'
+        - 'spec_violation'
+        - 'quality_report'
+    zen_mcp:
+      enabled: true
+      commands: 
+        - 'codereview'
+        - 'challenge'
+        - 'refactor'
+      timeout: 30
+    knowledge_graph: {}
+    o3_search: {}
