@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 import asyncio
 import logging
+import time
 
 from vibezen.core.config import VIBEZENConfig
 from vibezen.core.models import (
@@ -22,6 +23,7 @@ from vibezen.proxy.ai_proxy import AIProxy, ProxyConfig
 from vibezen.providers.registry import ProviderRegistry
 from vibezen.prompts.template_engine import PromptTemplateEngine
 from vibezen.prompts.phases import PhaseManager
+from vibezen.metrics import MetricsCollector, SystemMetric, MetricType
 
 
 logger = logging.getLogger(__name__)
@@ -66,6 +68,7 @@ class VIBEZENGuardV2:
         self.provider_registry = ProviderRegistry()
         self.template_engine = PromptTemplateEngine()
         self.phase_manager = PhaseManager()
+        self.metrics_collector = MetricsCollector()
         
         # State
         self.current_context: Optional[ThinkingContext] = None
@@ -99,6 +102,9 @@ class VIBEZENGuardV2:
         """
         await self.initialize()
         
+        # Start timing
+        start_time = time.time()
+        
         # Create thinking context
         self.current_context = ThinkingContext(
             phase=ThinkingPhase.SPEC_UNDERSTANDING,
@@ -128,6 +134,31 @@ class VIBEZENGuardV2:
         # Update context
         self.current_context.confidence = understanding.get("confidence", 0.5)
         self.current_context.metadata.update(understanding)
+        
+        # Record metrics
+        duration = time.time() - start_time
+        await self.metrics_collector.record_system_metric(
+            metric_type=MetricType.RESPONSE_TIME,
+            value=duration,
+            metadata={
+                "phase": "spec_understanding",
+                "provider": provider,
+                "model": model,
+                "confidence": self.current_context.confidence,
+                "thinking_steps": len(response.thinking_trace) if hasattr(response, "thinking_trace") else 0,
+            }
+        )
+        
+        # Record phase completion
+        await self.metrics_collector.record_metric(
+            "phase_completion",
+            1,
+            metadata={
+                "phase": "spec_understanding",
+                "success": True,
+                "duration": duration,
+            }
+        )
         
         return {
             "success": True,

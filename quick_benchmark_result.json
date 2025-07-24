@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-07-24T19:02:11.541782",
+  "tests": {
+    "quality_check_vibezen": {
+      "execution_time": 4.11274852999486,
+      "memory_delta_mb": 0.1640625,
+      "success": true,
+      "output_size": 1649
+    },
+    "quality_check_techbookanalytics": {
+      "timeout": true,
+      "execution_time": 15.0
+    },
+    "vz_command": {
+      "execution_time": 4.160096160005196,
+      "success": true,
+      "output_size": 2221
+    },
+    "file_throughput": {
+      "total_files": 100,
+      "processing_time": 91.70415979999962,
+      "throughput_files_per_sec": 1.090463074064394
+    }
+  }
+}

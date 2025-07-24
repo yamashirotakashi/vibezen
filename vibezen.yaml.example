@@ -1,0 +1,430 @@
+# VIBEZEN 設定ファイル（新規ユーザー向けテンプレート）
+# このファイルを vibezen.yaml にコピーして使用してください
+# cp vibezen.yaml.example vibezen.yaml
+
+vibezen:
+  version: "1.0.0"
+  
+  # =============================================================================
+  # Sequential Thinking Engine 設定
+  # AIの段階的思考プロセスを管理するエンジン
+  # =============================================================================
+  thinking:
+    # 各フェーズの最小思考ステップ数
+    min_steps:
+      spec_understanding: 5      # 仕様理解フェーズ（推奨: 3-7）
+      implementation_choice: 4   # 実装選択フェーズ（推奨: 3-6）
+      quality_review: 3          # 品質レビューフェーズ（推奨: 2-5）
+      testing_strategy: 3        # テスト戦略フェーズ（推奨: 2-4）
+    
+    # 信頼度閾値（この値を下回ると追加思考を強制）
+    confidence_threshold: 0.7    # 推奨: 0.6-0.8（厳格: 0.8+, 緩和: 0.6-）
+    
+    # 思考の最大ステップ数（安全制限）
+    max_steps: 10               # 推奨: 8-15
+    
+    # 高度な設定
+    allow_revision: true        # リビジョン許可
+    force_branches: false       # 代替案検討を強制（学習時: true）
+    
+    # タイムアウト設定（秒）
+    timeouts:
+      step_timeout_seconds: 30    # 単一ステップ
+      total_timeout_seconds: 300  # 全体プロセス
+  
+  # =============================================================================
+  # 3層防御システム設定
+  # 事前検証 → 実装中監視 → 事後検証
+  # =============================================================================
+  defense:
+    # 事前検証レイヤー
+    pre_validation:
+      enabled: true
+      use_o3_search: true        # o3-search統合（高度な仕様分析）
+      search_timeout: 30         # o3-search タイムアウト（秒）
+      spec_analysis_depth: "medium"  # shallow, medium, deep
+      
+    # 実装中監視レイヤー
+    runtime_monitoring:
+      enabled: true
+      real_time: true            # リアルタイム監視
+      polling_interval: 5        # 監視間隔（秒）
+      immediate_alerts: true     # 即座にアラート
+      
+    # 事後検証レイヤー
+    post_validation:
+      enabled: true
+      comprehensive_report: true
+      auto_fix_suggestions: true
+  
+  # =============================================================================
+  # 内省トリガーシステム設定
+  # ハードコード、複雑度、仕様違反を自動検出
+  # =============================================================================
+  triggers:
+    # ハードコード検出
+    hardcode_detection:
+      enabled: true
+      context_aware: true        # コンテキスト認識型検出
+      false_positive_filter: true
+      
+      # 検出パターン
+      patterns:
+        - "magic_numbers"         # マジックナンバー
+        - "hardcoded_strings"     # ハードコード文字列
+        - "hardcoded_paths"       # ハードコードパス
+        - "environment_specific"  # 環境依存コード
+      
+      # 除外設定（テストファイル等）
+      exclusions:
+        - "test_*.py"
+        - "tests/*"
+        - "constants.py"
+        - "*_test.py"
+    
+    # 複雑度監視
+    complexity_monitoring:
+      enabled: true
+      cyclomatic_threshold: 10   # 循環的複雑度（推奨: 8-15）
+      nesting_threshold: 4       # ネスト深度
+      function_length_threshold: 50  # 関数長（行数）
+      
+      # 高度な設定
+      ignore_test_files: true
+      ignore_generated_code: true
+    
+    # 仕様違反検出
+    spec_violation_detection:
+      enabled: true
+      strict_mode: false         # 厳格モード（新規: false, 既存改善: true）
+      sensitivity: "medium"      # low, medium, high
+  
+  # =============================================================================
+  # 品質メトリクス・自動手戻りシステム設定
+  # =============================================================================
+  quality:
+    # 品質グレード計算
+    grading:
+      excellent_threshold: 0.9   # 優秀（A）
+      good_threshold: 0.8        # 良好（B）
+      acceptable_threshold: 0.7  # 許容（C）
+      poor_threshold: 0.6        # 要改善（D）
+      # 0.6未満は要大幅改善（F）
+    
+    # メトリクス重み設定
+    weights:
+      thinking_quality: 0.3      # 思考品質
+      code_quality: 0.3          # コード品質
+      spec_compliance: 0.2       # 仕様準拠性
+      test_coverage: 0.2         # テストカバレッジ
+    
+    # 自動手戻りシステム
+    auto_rollback:
+      enabled: true              # 自動修正機能
+      threshold: 60              # 品質スコア閾値（0-100）
+      max_attempts: 3            # 最大修正試行回数
+      require_confirmation: false # 修正前の確認要求
+      confidence_threshold: 0.8  # 修正実行の信頼度閾値
+      
+      # 修正戦略
+      fix_strategies:
+        - "refactor_complex_functions"
+        - "extract_constants"
+        - "add_type_hints"
+        - "improve_naming"
+    
+    # レポート設定
+    reporting:
+      format: "user_friendly"    # technical, user_friendly, executive
+      include_technical_details: false
+      include_code_snippets: true
+      include_recommendations: true
+      
+      # 出力設定
+      output_formats:
+        - "console"
+        - "html"
+      save_reports: true
+      report_directory: "reports"
+    
+    # パフォーマンス設定（超高速モード）
+    performance:
+      enable_ultra_fast_mode: true  # 511.1 files/sec
+      parallel_processing: true
+      max_workers: 4             # CPU論理コア数に応じて調整
+      batch_size: 100
+      timeout_seconds: 30
+      max_memory_mb: 1024
+  
+  # =============================================================================
+  # 外部システム統合設定
+  # =============================================================================
+  integrations:
+    # zen-MCP統合（複数モデルによる品質評価）
+    zen_mcp:
+      enabled: true
+      
+      # 利用コマンド
+      commands:
+        - "consensus"             # 合意形成
+        - "challenge"             # 批判的評価
+        - "thinkdeep"             # 深い分析
+        - "codereview"            # コードレビュー
+      
+      timeout: 60               # タイムアウト（秒）
+      
+      # 決定論的設定（再現性のため）
+      deterministic:
+        enabled: true
+        seed: 42
+      
+      # リトライ設定
+      retry_config:
+        max_retries: 3
+        backoff_factor: 2
+    
+    # o3-search統合（高度な仕様分析）
+    o3_search:
+      enabled: true
+      cache_enabled: true        # キャッシュで高速化
+      cache_ttl_hours: 24
+      max_search_depth: 3
+      search_timeout: 30
+      min_confidence_score: 0.7
+      include_experimental: false
+    
+    # MIS統合（Memory Integration System）
+    mis:
+      enabled: true
+      event_driven: true         # イベント駆動統合
+      bidirectional_sync: true   # 双方向同期
+      sync_interval_minutes: 5
+      
+      # Knowledge Graph統合
+      knowledge_graph_integration: true
+      thinking_history_storage: true
+      metrics_storage: true
+    
+    # Knowledge Graph統合
+    knowledge_graph:
+      enabled: true
+      project_id: "my_project"   # プロジェクト固有ID
+      auto_persist: true
+      persist_interval_minutes: 10
+      store_thinking_steps: true
+      store_quality_metrics: true
+      auto_create_relationships: true
+  
+  # =============================================================================
+  # キャッシュ・パフォーマンス設定
+  # =============================================================================
+  cache:
+    # メモリキャッシュ
+    memory:
+      enabled: true
+      max_size_mb: 500           # 最大メモリ使用量
+      ttl_minutes: 30            # 生存時間
+      cleanup_interval_minutes: 5
+    
+    # ディスクキャッシュ
+    disk:
+      enabled: true
+      cache_dir: ".vibezen_cache"
+      max_size_gb: 2
+      cleanup_interval_hours: 24
+    
+    # セマンティックキャッシュ（AI処理用）
+    semantic:
+      enabled: true
+      similarity_threshold: 0.85
+      vector_dimension: 384
+  
+  # =============================================================================
+  # ログ・監視設定
+  # =============================================================================
+  logging:
+    level: "INFO"               # DEBUG, INFO, WARNING, ERROR, CRITICAL
+    file_path: "logs/vibezen.log"
+    max_file_size_mb: 100
+    backup_count: 5
+    structured_logging: true
+    
+    # 詳細ログ設定
+    detailed_logging:
+      thinking_steps: false      # 思考ステップのログ（デバッグ時: true）
+      performance_metrics: true
+      integration_calls: false   # 外部統合呼び出し（デバッグ時: true）
+  
+  monitoring:
+    enabled: true
+    interval_seconds: 10
+    
+    # アラート通知先
+    alert_channels:
+      - console                  # コンソール出力
+      - file                     # ファイル出力
+    
+    # メトリクス収集
+    metrics:
+      thinking_quality: true
+      performance_metrics: true
+      error_rates: true
+  
+  # =============================================================================
+  # セキュリティ設定
+  # =============================================================================
+  security:
+    # 入力検証
+    input_validation:
+      enabled: true
+      path_traversal_protection: true
+      sanitize_user_inputs: true
+      max_file_size_mb: 100
+    
+    # エラーハンドリング
+    error_handling:
+      safe_exception_handling: true
+      no_bare_exceptions: true
+      timeout_protection: true
+    
+    # ファイルアクセス制限
+    file_access:
+      allowed_extensions:
+        - ".py"
+        - ".yaml"
+        - ".yml"
+        - ".json"
+        - ".md"
+        - ".txt"
+      
+      blocked_directories:
+        - "/etc"
+        - "/sys"
+        - "/proc"
+
+# =============================================================================
+# プロジェクトタイプ別設定例
+# =============================================================================
+
+# 高セキュリティプロジェクト用設定（コメントアウト）
+# project_overrides:
+#   high_security:
+#     thinking:
+#       confidence_threshold: 0.8
+#       min_steps:
+#         security_review: 5
+#     triggers:
+#       spec_violation_detection:
+#         strict_mode: true
+#         sensitivity: "high"
+#     security:
+#       input_validation:
+#         enabled: true
+
+# 高速開発プロジェクト用設定（コメントアウト）
+# rapid_development:
+#   thinking:
+#     confidence_threshold: 0.6
+#     max_steps: 6
+#   quality:
+#     performance:
+#       enable_ultra_fast_mode: true
+#       max_workers: 16
+#   defense:
+#     pre_validation:
+#       spec_analysis_depth: "shallow"
+
+# 学習プロジェクト用設定（コメントアウト）
+# learning_mode:
+#   thinking:
+#     force_branches: true
+#     allow_revision: true
+#   quality:
+#     auto_rollback:
+#       enabled: false
+#   triggers:
+#     complexity_monitoring:
+#       cyclomatic_threshold: 5
+
+# =============================================================================
+# 環境別設定例
+# =============================================================================
+
+# 開発環境設定（コメントアウト）
+# environments:
+#   development:
+#     logging:
+#       level: "DEBUG"
+#       detailed_logging:
+#         thinking_steps: true
+#         integration_calls: true
+#     monitoring:
+#       enabled: false
+#     quality:
+#       auto_rollback:
+#         require_confirmation: true
+
+# 本番環境設定（コメントアウト）
+# production:
+#   logging:
+#     level: "WARNING"
+#   monitoring:
+#     enabled: true
+#   quality:
+#     auto_rollback:
+#       require_confirmation: false
+#   security:
+#     input_validation:
+#       enabled: true
+
+# =============================================================================
+# 設定のヒント
+# =============================================================================
+
+# 1. 初回導入時の推奨設定:
+#    - confidence_threshold: 0.6 (緩め)
+#    - auto_rollback.enabled: false (手動確認)
+#    - strict_mode: false
+#
+# 2. 慣れてきたら厳格に:
+#    - confidence_threshold: 0.7-0.8
+#    - auto_rollback.enabled: true
+#    - strict_mode: true
+#
+# 3. パフォーマンス重視:
+#    - enable_ultra_fast_mode: true
+#    - max_workers: CPUコア数の1-2倍
+#    - cache.enabled: true
+#
+# 4. 品質重視:
+#    - min_steps を増やす
+#    - force_branches: true
+#    - complexity_threshold を厳しく
+
+# =============================================================================
+# この設定ファイルの使い方
+# =============================================================================
+
+# 1. このファイルを vibezen.yaml にコピー:
+#    cp vibezen.yaml.example vibezen.yaml
+#
+# 2. プロジェクトに応じて設定を調整
+#
+# 3. 設定の検証:
+#    python -m vibezen.config.validator vibezen.yaml
+#
+# 4. 設定の詳細表示:
+#    python -m vibezen.config.display vibezen.yaml
+#
+# 5. VIBEZENの実行:
+#    python scripts/ultra_fast_quality_checker.py /path/to/project
+
+# =============================================================================
+# サポート・ドキュメント
+# =============================================================================
+
+# - 設定ガイド: docs/configuration.md
+# - API リファレンス: docs/api_reference.md
+# - トラブルシューティング: docs/troubleshooting.md
+# - ベストプラクティス: docs/best_practices.md
+# - GitHub Issues: https://github.com/your-org/vibezen/issues

@@ -124,6 +124,99 @@ class IntegrationsConfig(BaseModel):
     o3_search: Dict[str, Any] = Field(default_factory=dict)
 
 
+class ConnectionPoolingConfig(BaseModel):
+    """Connection pooling configuration."""
+    model_config = ConfigDict(extra="forbid")
+    
+    enabled: bool = Field(default=True)
+    min_connections: int = Field(default=2, ge=1)
+    max_connections: int = Field(default=10, ge=1)
+    idle_timeout: int = Field(default=300, ge=0)  # seconds
+
+
+class BatchProcessingConfig(BaseModel):
+    """Batch processing configuration."""
+    model_config = ConfigDict(extra="forbid")
+    
+    enabled: bool = Field(default=True)
+    batch_size: int = Field(default=10, ge=1)
+    batch_timeout: float = Field(default=0.1, ge=0.01)  # seconds
+    max_concurrent_batches: int = Field(default=3, ge=1)
+
+
+class ResourceLimitsConfig(BaseModel):
+    """Resource limits configuration."""
+    model_config = ConfigDict(extra="forbid")
+    
+    max_memory_mb: Optional[int] = Field(default=1024, ge=0)
+    max_cpu_percent: Optional[float] = Field(default=80, ge=0, le=100)
+    max_concurrent_tasks: Optional[int] = Field(default=50, ge=1)
+    max_requests_per_minute: Optional[int] = Field(default=100, ge=1)
+
+
+class CacheOptimizationConfig(BaseModel):
+    """Cache optimization configuration."""
+    model_config = ConfigDict(extra="forbid")
+    
+    semantic_cache_gpu: bool = Field(default=False)
+    vector_index_type: str = Field(default="IVF")  # Flat, IVF, HNSW
+    warm_up_queries: bool = Field(default=True)
+    index_optimization_threshold: int = Field(default=1000, ge=100)
+
+
+class ProfilingConfig(BaseModel):
+    """Profiling configuration."""
+    model_config = ConfigDict(extra="forbid")
+    
+    enabled: bool = Field(default=True)
+    profile_cpu: bool = Field(default=True)
+    profile_memory: bool = Field(default=True)
+    auto_optimize: bool = Field(default=True)
+    optimization_interval: int = Field(default=300, ge=60)  # seconds
+
+
+class DashboardConfig(BaseModel):
+    """Dashboard configuration."""
+    model_config = ConfigDict(extra="forbid")
+    
+    enabled: bool = Field(default=True)
+    host: str = Field(default="0.0.0.0")
+    port: int = Field(default=8080, ge=1, le=65535)
+
+
+class MetricsConfig(BaseModel):
+    """Metrics collection configuration."""
+    model_config = ConfigDict(extra="forbid")
+    
+    enabled: bool = Field(default=True)
+    storage_dir: str = Field(default="./metrics_data")
+    buffer_size: int = Field(default=100, ge=1)
+    flush_interval: int = Field(default=10, ge=1)
+    retention_days: int = Field(default=30, ge=1)
+    dashboard: DashboardConfig = Field(default_factory=DashboardConfig)
+
+
+class PerformanceConfig(BaseModel):
+    """Performance optimization configuration."""
+    model_config = ConfigDict(extra="forbid")
+    
+    connection_pooling: ConnectionPoolingConfig = Field(
+        default_factory=ConnectionPoolingConfig
+    )
+    batch_processing: BatchProcessingConfig = Field(
+        default_factory=BatchProcessingConfig
+    )
+    resource_limits: ResourceLimitsConfig = Field(
+        default_factory=ResourceLimitsConfig
+    )
+    cache_optimization: CacheOptimizationConfig = Field(
+        default_factory=CacheOptimizationConfig
+    )
+    profiling: ProfilingConfig = Field(
+        default_factory=ProfilingConfig
+    )
+
+
 class VIBEZENConfig(BaseModel):
     """Main VIBEZEN configuration."""
     model_config = ConfigDict(extra="forbid")
@@ -132,6 +225,8 @@ class VIBEZENConfig(BaseModel):
     defense: DefenseConfig = Field(default_factory=DefenseConfig)
     triggers: TriggersConfig = Field(default_factory=TriggersConfig)
     integrations: IntegrationsConfig = Field(default_factory=IntegrationsConfig)
+    metrics: MetricsConfig = Field(default_factory=MetricsConfig)
+    performance: PerformanceConfig = Field(default_factory=PerformanceConfig)
     
     @classmethod
     def from_yaml(cls, path: Path) -> "VIBEZENConfig":

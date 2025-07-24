@@ -38,6 +38,21 @@ try:
 except ImportError:
     pass
 
+# Performance Optimization
+try:
+    from vibezen.core.optimized_guard import OptimizedVIBEZENGuard
+    from vibezen.performance import (
+        ConnectionPool,
+        BatchProcessor,
+        SmartBatchProcessor,
+        ResourceManager,
+        ResourceLimit,
+        PerformanceProfiler,
+    )
+    from vibezen.cache.semantic_cache_optimized import OptimizedSemanticCache
+except ImportError:
+    pass
+
 __all__ = [
     "VIBEZENConfig",
     "VIBEZENGuard",
@@ -54,4 +69,13 @@ __all__ = [
     "VIBEZENCircuitBreakerPresets",
     # Integration
     "VIBEZENWorkflowIntegration",
+    # Performance Optimization
+    "OptimizedVIBEZENGuard",
+    "ConnectionPool",
+    "BatchProcessor",
+    "SmartBatchProcessor",
+    "ResourceManager",
+    "ResourceLimit",
+    "PerformanceProfiler",
+    "OptimizedSemanticCache",
 ]

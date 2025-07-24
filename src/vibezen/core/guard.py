@@ -20,6 +20,10 @@ from vibezen.integrations.workflow_hook import (
     WorkflowResult,
     QualityReport,
 )
+from vibezen.metrics.quality_detector import (
+    get_quality_detector,
+    MovingCodeDetector,
+)
 
 
 class VIBEZENGuard:
@@ -59,10 +63,14 @@ class VIBEZENGuard:
             force_branches=self.config.thinking.force_branches,
         )
         
+        # Quality detector for "moving code" detection
+        self.quality_detector = get_quality_detector()
+        
         # State tracking
         self._current_spec: Optional[Dict[str, Any]] = None
         self._violations: List[SpecViolation] = []
         self._thinking_results: List[ThinkingResult] = []
+        self._detection_rates: Dict[str, float] = {}
     
     async def validate_specification(self, spec: Dict[str, Any]) -> ThinkingResult:
         """
@@ -98,6 +106,25 @@ class VIBEZENGuard:
         """
         violations = []
         
+        # Run quality detector for "moving code" patterns
+        quality_triggers, detection_rates = await self.quality_detector.detect_quality_issues(
+            code=code,
+            specification=spec,
+            context={"phase": "implementation_validation"}
+        )
+        
+        # Convert quality triggers to violations
+        for trigger in quality_triggers:
+            violations.append(SpecViolation(
+                type=ViolationType.QUALITY,
+                description=trigger.message,
+                severity=self._map_trigger_severity(trigger.severity),
+                suggested_action=trigger.suggestion,
+            ))
+        
+        # Store detection rates for reporting
+        self._detection_rates = detection_rates
+        
         # Check for hardcoded values
         if self.config.triggers.hardcode_detection.enabled:
             hardcode_violations = await self._detect_hardcodes(code)
@@ -120,6 +147,8 @@ class VIBEZENGuard:
             "critical_count": sum(1 for v in violations if v.severity == Severity.CRITICAL),
             "high_count": sum(1 for v in violations if v.severity == Severity.HIGH),
             "recommendations": self._generate_recommendations(violations),
+            "detection_rates": self._detection_rates,
+            "quality_report": self.quality_detector.get_detection_report(),
         }
     
     async def guide_implementation(self, spec: Dict[str, Any]) -> ThinkingResult:
@@ -356,3 +385,46 @@ class VIBEZENGuard:
         self._violations.clear()
         self._thinking_results.clear()
         self.thinking_engine.clear_traces()
+        self._detection_rates.clear()
+    
+    def _map_trigger_severity(self, trigger_severity: str) -> Severity:
+        """Map trigger severity to VIBEZEN severity."""
+        mapping = {
+            "critical": Severity.CRITICAL,
+            "high": Severity.HIGH,
+            "medium": Severity.MEDIUM,
+            "low": Severity.LOW,
+        }
+        return mapping.get(trigger_severity.lower(), Severity.MEDIUM)
+    
+    async def record_detection_feedback(
+        self, 
+        violation: SpecViolation, 
+        is_correct: bool,
+        user_comment: Optional[str] = None
+    ) -> None:
+        """
+        Record user feedback on detection accuracy.
+        
+        Args:
+            violation: The violation detected
+            is_correct: Whether the detection was correct
+            user_comment: Optional user comment
+        """
+        # Find corresponding trigger
+        for trigger in self.quality_detector.detection_history:
+            if trigger.get("message") == violation.description:
+                self.quality_detector.record_feedback(
+                    trigger=trigger,
+                    is_correct=is_correct,
+                    user_comment=user_comment
+                )
+                break
+    
+    def get_detection_metrics(self) -> Dict[str, Any]:
+        """Get current detection rate metrics."""
+        return {
+            "detection_rates": self._detection_rates,
+            "detection_report": self.quality_detector.get_detection_report(),
+            "metrics_export": self.quality_detector._calculate_overall_detection_rate(),
+        }

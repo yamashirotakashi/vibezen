@@ -26,3 +26,6 @@ mypy>=1.8.0
 # Logging and monitoring
 python-json-logger>=2.0.0
 structlog>=23.0.0
+
+# File operations
+aiofiles>=24.1.0

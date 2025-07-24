@@ -1,63 +1,269 @@
+# VIBEZEN - VIBEcoding Enhancement Zen
+# 自律的品質保証システム設定ファイル
+# 最終更新: 2025-07-24
+
 vibezen:
-  # Sequential Thinking設定
+  # バージョン情報
+  version: "1.0.0"
+  
+  # Sequential Thinking Engine設定
   thinking:
+    # 各フェーズの最小思考ステップ数
     min_steps:
-      spec_understanding: 5
-      implementation_choice: 4
-      test_design: 3
-      quality_review: 2
-      optimization: 2
-    confidence_threshold: 0.7
-    max_steps: 10
-    allow_revision: true
-    force_branches: false
+      spec_understanding: 5      # 仕様理解フェーズ
+      implementation_choice: 4   # 実装選択フェーズ
+      quality_review: 3          # 品質レビューフェーズ
+      testing_strategy: 3        # テスト戦略フェーズ
     
-  # 防御レベル設定
+    # 信頼度閾値（この値を下回ると追加思考を強制）
+    confidence_threshold: 0.7
+    
+    # 思考の最大ステップ数（安全制限）
+    max_steps: 10
+    
+    # リビジョン許可設定
+    allow_revision: true
+    
+    # ブランチ強制設定（代替案検討を強制）
+    force_branches: true
+    
+    # 思考品質メトリクス
+    quality_metrics:
+      depth_weight: 0.4       # 思考の深さの重み
+      revision_weight: 0.3    # リビジョン回数の重み
+      branch_weight: 0.3      # ブランチ探索の重み
+
+  # 3層防御システム設定
   defense:
+    # 事前検証レイヤー
     pre_validation:
       enabled: true
-      use_o3_search: true
-      cache_results: true
-      cache_ttl: 3600
+      use_o3_search: true     # o3-search統合有効化
+      spec_analysis_depth: "deep"  # 仕様分析の深度
+      implementation_plan_validation: true
+    
+    # 実装中監視レイヤー
     runtime_monitoring:
       enabled: true
-      real_time: true
-      buffer_size: 100
-      check_interval: 0.5
+      real_time: true         # リアルタイム監視
+      spec_violation_detection: true
+      hardcode_detection: true
+      complexity_monitoring: true
+    
+    # 事後検証レイヤー
     post_validation:
       enabled: true
-      strict_mode: false
-      generate_report: true
-      
-  # トリガー設定
+      code_quality_analysis: true
+      spec_compliance_check: true
+      comprehensive_report: true
+
+  # 内省トリガーシステム設定
   triggers:
+    # ハードコード検出
     hardcode_detection:
       enabled: true
       patterns:
-        - 'port\s*=\s*\d+'
-        - 'password\s*=\s*["\']'
-        - '(localhost|127\.0\.0\.1)'
-        - 'timeout\s*=\s*\d+'
-        - 'api_key\s*=\s*["\']'
-      custom_patterns: []
-    complexity_threshold: 10
-    spec_violation_detection: true
-    over_implementation_detection: true
+        - "magic_numbers"     # マジックナンバー
+        - "hardcoded_strings" # ハードコード文字列
+        - "hardcoded_paths"   # ハードコードパス
+        - "environment_specific" # 環境依存コード
+      context_aware: true     # コンテキスト認識型検出
+      false_positive_filter: true
     
-  # 外部連携
-  integrations:
-    mis:
+    # 複雑度監視
+    complexity_monitoring:
       enabled: true
-      event_types: 
-        - 'code_generated'
-        - 'spec_violation'
-        - 'quality_report'
+      cyclomatic_threshold: 10  # 循環的複雑度閾値
+      nesting_threshold: 4      # ネスト深度閾値
+      function_length_threshold: 50  # 関数長閾値
+    
+    # 仕様違反検出
+    spec_violation_detection:
+      enabled: true
+      strict_mode: true
+      violation_types:
+        - "scope_creep"       # スコープクリープ
+        - "over_engineering"  # オーバーエンジニアリング
+        - "under_implementation" # 実装不足
+
+  # 品質メトリクス設定
+  quality:
+    # 品質グレード計算
+    grading:
+      excellent_threshold: 0.9    # 優秀（A）
+      good_threshold: 0.8         # 良好（B）
+      acceptable_threshold: 0.7   # 許容（C）
+      poor_threshold: 0.6         # 要改善（D）
+      # 0.6未満は要大幅改善（F）
+    
+    # メトリクス重み設定
+    weights:
+      thinking_quality: 0.3       # 思考品質
+      code_quality: 0.3           # コード品質
+      spec_compliance: 0.2        # 仕様準拠性
+      test_coverage: 0.2          # テストカバレッジ
+    
+    # 自動手戻りシステム
+    auto_rollback:
+      enabled: true
+      threshold: 60             # 品質スコア閾値（0-100）
+      max_attempts: 3           # 最大修正試行回数
+      backup_before_rollback: true
+    
+    # レポート設定
+    reporting:
+      format: user_friendly     # レポート形式
+      include_technical_details: false  # 技術詳細を含めるか
+    
+    # パフォーマンス設定
+    performance:
+      enable_ultra_fast_mode: true  # 超高速モード（511.1 files/sec）
+      parallel_processing: true     # 並列処理有効化
+      max_workers: 8                # 最大ワーカー数
+      batch_size: 100               # バッチサイズ
+      timeout_seconds: 30           # タイムアウト設定
+
+  # 外部システム統合設定
+  integrations:
+    # zen-MCP統合
     zen_mcp:
       enabled: true
-      commands: 
-        - 'codereview'
-        - 'challenge'
-        - 'refactor'
-      timeout: 30
-    knowledge_graph: {}
-    o3_search: {}
+      commands:
+        - "consensus"     # 合意形成
+        - "challenge"     # 批判的評価
+        - "thinkdeep"     # 深い分析
+        - "codereview"    # コードレビュー
+      timeout: 60       # タイムアウト（秒）
+      deterministic:
+        enabled: true   # 決定論的シード（再現性）
+    
+    # o3-search統合
+    o3_search:
+      enabled: true
+      cache_enabled: true
+      cache_ttl_hours: 24
+      max_search_depth: 3
+    
+    # MIS統合
+    mis:
+      enabled: true
+      event_driven: true
+      bidirectional_sync: true
+      knowledge_graph_integration: true
+    
+    # Knowledge Graph統合
+    knowledge_graph:
+      enabled: true
+      project_id: "vibezen"
+      auto_persist: true
+      thinking_history_storage: true
+
+  # トレーサビリティ設定
+  traceability:
+    # 仕様トレーサビリティマトリクス（STM）
+    stm:
+      enabled: true
+      auto_mapping: true
+      coverage_tracking: true
+      impact_analysis: true
+    
+    # 可視化設定
+    visualization:
+      dashboard_enabled: true
+      real_time_updates: true
+      alert_notifications: true
+
+  # 監視設定
+  monitoring:
+    enabled: true               # 監視を有効化
+    interval_seconds: 10        # 監視間隔（秒）
+    alert_channels:             # アラート通知先
+      - console                 # コンソール出力
+    
+    # メトリクス収集
+    metrics:
+      thinking_quality: true    # 思考品質メトリクス
+      performance_metrics: true # パフォーマンスメトリクス
+      integration_calls: true   # 外部統合呼び出し
+
+  # ログ設定
+  logging:
+    level: "INFO"
+    file_path: "logs/vibezen.log"
+    max_file_size_mb: 100
+    backup_count: 5
+    structured_logging: true
+    
+    # ログフォーマット
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    
+    # 詳細ログ設定
+    detailed_logging:
+      thinking_steps: true      # 思考ステップのログ
+      performance_metrics: true # パフォーマンスメトリクス
+      integration_calls: true   # 外部統合呼び出し
+
+  # セキュリティ設定
+  security:
+    # 入力検証
+    input_validation:
+      enabled: true
+      path_traversal_protection: true
+      sanitize_user_inputs: true
+    
+    # エラーハンドリング
+    error_handling:
+      safe_exception_handling: true
+      no_bare_exceptions: true
+      timeout_protection: true
+
+  # キャッシュ設定
+  cache:
+    # メモリキャッシュ
+    memory:
+      enabled: true
+      max_size_mb: 500
+      ttl_minutes: 30
+    
+    # ディスクキャッシュ
+    disk:
+      enabled: true
+      cache_dir: ".vibezen_cache"
+      max_size_gb: 2
+      cleanup_interval_hours: 24
+    
+    # セマンティックキャッシュ
+    semantic:
+      enabled: true
+      similarity_threshold: 0.85
+      vector_dimension: 384
+
+  # 成功指標設定
+  success_metrics:
+    target_detection_rate: 0.95        # 動くだけコード検出率目標
+    target_spec_compliance: 0.98       # 仕様準拠率目標
+    target_auto_fix_rate: 0.80         # 自動修正成功率目標
+    target_user_satisfaction: 0.90     # ユーザー満足度目標
+
+# プロジェクト固有設定の例
+project_overrides:
+  # 例: 高セキュリティプロジェクト用設定
+  high_security:
+    thinking:
+      confidence_threshold: 0.8
+    triggers:
+      spec_violation_detection:
+        strict_mode: true
+    security:
+      input_validation:
+        path_traversal_protection: true
+  
+  # 例: 高速開発プロジェクト用設定
+  rapid_development:
+    thinking:
+      confidence_threshold: 0.6
+      max_steps: 6
+    quality:
+      performance:
+        enable_ultra_fast_mode: true
+        max_workers: 16

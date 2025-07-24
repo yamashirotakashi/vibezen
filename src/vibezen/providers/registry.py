@@ -2,7 +2,7 @@
 Provider Registry for managing AI providers.
 """
 
-from typing import Dict, List, Optional, Type
+from typing import Dict, List, Optional, Type, Any
 import os
 import logging
 

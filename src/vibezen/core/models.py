@@ -38,6 +38,7 @@ class ViolationType(str, Enum):
     DEVIATION = "deviation"
     HARDCODE = "hardcode"
     COMPLEXITY = "complexity"
+    QUALITY = "quality"  # For "moving code" patterns
 
 
 class Severity(str, Enum):
