@@ -1,0 +1,88 @@
+{
+  "hooks": {
+    "before_edit": {
+      "command": "python /mnt/c/Users/tky99/dev/scripts/pre_fix_analyzer.py",
+      "timeout": 60000,
+      "description": "設計思想保護分析 - バンドエイド修正を防ぐ",
+      "enabled": true
+    },
+    "before_bash": {
+      "command": "python /mnt/c/Users/tky99/dev/scripts/safe_command_filter.py",
+      "timeout": 5000,
+      "description": "危険コマンド検出 - システム破壊を防ぐ",
+      "enabled": true
+    },
+    "after_edit": {
+      "command": "python /mnt/c/Users/tky99/dev/vibezen/scripts/vibezen_quality_check.py --file ${file_path}",
+      "timeout": 30000,
+      "description": "VIBEZEN品質チェック - 編集後の品質保証",
+      "enabled": true
+    },
+    "before_mcp_call": {
+      "command": "python /mnt/c/Users/tky99/dev/vibezen/scripts/mcp_pre_execution_guard.py",
+      "timeout": 45000,
+      "description": "MCP実行前検証 - API呼び出しの妥当性チェック",
+      "enabled": true,
+      "patterns": ["mcp__knowledge-graph__*", "mcp__memory__*"]
+    },
+    "mcp_context_preparation": {
+      "command": "python /mnt/c/Users/tky99/dev/vibezen/scripts/mcp_context_setup.py",
+      "timeout": 10000,
+      "description": "MCPコンテキスト準備 - project_id等の自動設定",
+      "enabled": true,
+      "patterns": ["mcp__*"]
+    },
+    "mcp_quality_guard": {
+      "command": "python /mnt/c/Users/tky99/dev/vibezen/scripts/vibezen_mcp_quality_check.py",
+      "timeout": 60000,
+      "description": "VIBEZEN MCP品質保証 - MCP操作の事前品質チェック",
+      "enabled": true,
+      "patterns": ["mcp__knowledge-graph__create_*", "mcp__memory__create_*"]
+    },
+    "on_session_start": {
+      "command": "python /mnt/c/Users/tky99/dev/scripts/work_session_manager.py start",
+      "timeout": 30000,
+      "description": "セッション開始処理 - 前回の状態復元",
+      "enabled": true
+    },
+    "on_session_end": {
+      "command": "python /mnt/c/Users/tky99/dev/scripts/work_session_manager.py end",
+      "timeout": 30000,
+      "description": "セッション終了処理 - 状態の保存",
+      "enabled": true
+    }
+  },
+  "safety": {
+    "enabled": true,
+    "blocked_commands": [
+      "rm -rf /",
+      "sudo rm -rf",
+      "format c:",
+      "curl | sh",
+      "wget | sh",
+      ":(){:|:&};:"
+    ],
+    "require_confirmation": [
+      "git push --force",
+      "git reset --hard",
+      "docker system prune",
+      "npm run build --production",
+      "pip uninstall"
+    ]
+  },
+  "performance": {
+    "parallel_hooks": false,
+    "cache_enabled": true,
+    "cache_ttl_seconds": 300
+  },
+  "_metadata": {
+    "version": "1.0.0",
+    "created_at": "2025-01-24",
+    "description": "VIBEZEN統合用Hooks設定 - Claude Code v1.0.41+ タイムアウト機能対応",
+    "notes": [
+      "タイムアウト機能により、従来無効化されていたMCP Hooksを復活",
+      "各Hookに適切なタイムアウトを設定し、無限待機を防止",
+      "MCP実行前の品質チェックにより、不適切なKG/MB操作を防止"
+    ]
+  }
+}

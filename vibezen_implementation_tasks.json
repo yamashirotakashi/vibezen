@@ -1,0 +1,337 @@
+[
+  {
+    "id": "mention-1",
+    "title": "MCP Resource参照パターンの調査",
+    "description": "@メンション構文の仕様調査とサンプル収集",
+    "phase": "Phase1-@メンション統合",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:52:45.882938",
+    "notes": "MCPメンションパターンの調査完了"
+  },
+  {
+    "id": "mention-2",
+    "title": "@メンション構文のパーサー実装",
+    "description": "@knowledge-graph:path形式をパースする機能実装",
+    "phase": "Phase1-@メンション統合",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [
+      "mention-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:52:52.777713",
+    "notes": "@メンション構文パーサー実装完了"
+  },
+  {
+    "id": "mention-3",
+    "title": "既存API呼び出しの@メンション置換",
+    "description": "mis_knowledge_sync.pyの@メンション対応",
+    "phase": "Phase1-@メンション統合",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 2,
+    "actual_days": null,
+    "dependencies": [
+      "mention-2"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:52:57.085005",
+    "notes": "mis_knowledge_sync_v2.pyと移行スクリプト作成完了"
+  },
+  {
+    "id": "timeout-1",
+    "title": "各Hookの処理時間計測",
+    "description": "現在のHook処理時間をプロファイリング",
+    "phase": "Phase1-タイムアウト設定",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": 1,
+    "dependencies": [],
+    "assignee": null,
+    "start_date": "2025-07-24T22:29:18.940153",
+    "end_date": "2025-07-24T22:35:43.557254",
+    "notes": "パフォーマンスプロファイラー実装済み"
+  },
+  {
+    "id": "timeout-2",
+    "title": ".claude_hooks_config.json更新",
+    "description": "個別タイムアウト設定の追加",
+    "phase": "Phase1-タイムアウト設定",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [
+      "timeout-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:35:50.809106",
+    "notes": ".claude_hooks_config.json作成済み"
+  },
+  {
+    "id": "mcp-hook-1",
+    "title": "無効化されたMCP Hooksの調査",
+    "description": "従来無効化されていたMCP関連Hooksの特定と分析",
+    "phase": "Phase1-MCP Hooks復旧",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [
+      "timeout-2"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:35:58.377255",
+    "notes": "無効化されていたMCP Hooksを調査完了"
+  },
+  {
+    "id": "mcp-hook-2",
+    "title": "mcp_pre_execution_guard.py実装",
+    "description": "MCP呼び出し前の妥当性チェックスクリプト",
+    "phase": "Phase1-MCP Hooks復旧",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [
+      "mcp-hook-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:36:04.939897",
+    "notes": "mcp_pre_execution_guard.py実装完了"
+  },
+  {
+    "id": "mcp-hook-3",
+    "title": "mcp_context_setup.py実装",
+    "description": "project_id等の自動コンテキスト設定",
+    "phase": "Phase1-MCP Hooks復旧",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [
+      "mcp-hook-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:36:09.291637",
+    "notes": "mcp_context_setup.py実装完了"
+  },
+  {
+    "id": "mcp-hook-4",
+    "title": "vibezen_mcp_quality_check.py実装",
+    "description": "VIBEZEN品質ガードのMCP版",
+    "phase": "Phase1-MCP Hooks復旧",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [
+      "mcp-hook-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:36:16.137086",
+    "notes": "vibezen_mcp_quality_check.py実装完了"
+  },
+  {
+    "id": "mcp-hook-5",
+    "title": "MCP Hooks統合テスト",
+    "description": "全MCP Hooksの統合動作確認",
+    "phase": "Phase1-MCP Hooks復旧",
+    "priority": "high",
+    "status": "completed",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [
+      "mcp-hook-2",
+      "mcp-hook-3",
+      "mcp-hook-4"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": "2025-07-24T22:43:51.304070",
+    "notes": "統合テスト実装完了・全テスト成功"
+  },
+  {
+    "id": "split-1",
+    "title": "CLAUDE.md機能別分析",
+    "description": "現在のCLAUDE.mdを機能別に分類",
+    "phase": "Phase1-CLAUDE.md分割",
+    "priority": "high",
+    "status": "pending",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "split-2",
+    "title": "設定ファイル分割実装",
+    "description": "config/ディレクトリ構造の作成と分割",
+    "phase": "Phase1-CLAUDE.md分割",
+    "priority": "high",
+    "status": "pending",
+    "estimated_days": 2,
+    "actual_days": null,
+    "dependencies": [
+      "split-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "split-3",
+    "title": "インポート構造の実装",
+    "description": "@import文の動作確認と統合テスト",
+    "phase": "Phase1-CLAUDE.md分割",
+    "priority": "high",
+    "status": "pending",
+    "estimated_days": 1,
+    "actual_days": null,
+    "dependencies": [
+      "split-2"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "mcp-1",
+    "title": "FastAPIサーバー基盤実装",
+    "description": "MCPプロトコル対応のFastAPIアプリケーション作成",
+    "phase": "Phase2-MCPServer基盤",
+    "priority": "medium",
+    "status": "pending",
+    "estimated_days": 3,
+    "actual_days": null,
+    "dependencies": [],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "mcp-2",
+    "title": "MCPリソース定義",
+    "description": "quality-check, thinking-history等のリソース実装",
+    "phase": "Phase2-MCPServer基盤",
+    "priority": "medium",
+    "status": "pending",
+    "estimated_days": 2,
+    "actual_days": null,
+    "dependencies": [
+      "mcp-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "mcp-3",
+    "title": "MCPツール実装",
+    "description": "analyze_code_quality等のツール実装",
+    "phase": "Phase2-MCPServer基盤",
+    "priority": "medium",
+    "status": "pending",
+    "estimated_days": 2,
+    "actual_days": null,
+    "dependencies": [
+      "mcp-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "oauth-1",
+    "title": "OAuth2サーバー実装",
+    "description": "認証・認可サーバーの実装",
+    "phase": "Phase2-OAuth認証",
+    "priority": "medium",
+    "status": "pending",
+    "estimated_days": 3,
+    "actual_days": null,
+    "dependencies": [
+      "mcp-2",
+      "mcp-3"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "oauth-2",
+    "title": "クライアント管理機能",
+    "description": "OAuthクライアントの登録・管理",
+    "phase": "Phase2-OAuth認証",
+    "priority": "medium",
+    "status": "pending",
+    "estimated_days": 2,
+    "actual_days": null,
+    "dependencies": [
+      "oauth-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "deploy-1",
+    "title": "Docker化",
+    "description": "VIBEZENMCPサーバーのDocker化",
+    "phase": "Phase2-統合デプロイ",
+    "priority": "medium",
+    "status": "pending",
+    "estimated_days": 2,
+    "actual_days": null,
+    "dependencies": [
+      "oauth-2"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  },
+  {
+    "id": "deploy-2",
+    "title": "クライアントSDK作成",
+    "description": "Python/TypeScriptクライアントSDK",
+    "phase": "Phase2-統合デプロイ",
+    "priority": "medium",
+    "status": "pending",
+    "estimated_days": 3,
+    "actual_days": null,
+    "dependencies": [
+      "deploy-1"
+    ],
+    "assignee": null,
+    "start_date": null,
+    "end_date": null,
+    "notes": null
+  }
+]
